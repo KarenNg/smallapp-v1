@@ -17,6 +17,12 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await request.json();
   const { name, email, source, notes } = body as {
     name?: string;
@@ -39,13 +45,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "A lead with this email already exists" }, { status: 409 });
   }
 
-  const { count } = await supabase.from("leads").select("id", { count: "exact", head: true });
+  const { count } = await supabase.from("leads").select("id", { count: "exact", head: true }).eq("user_id", user.id);
 
   if ((count ?? 0) >= FREE_LEAD_LIMIT) {
     const { data: paidPayment } = await supabase
       .from("payments")
       .select("id")
       .eq("status", "paid")
+      .eq("email", user.email ?? "")
       .limit(1)
       .maybeSingle();
 
@@ -60,6 +67,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from("leads")
     .insert({
+      user_id: user.id,
       name: name.trim(),
       email: email.trim(),
       source: source?.trim() || "direct",

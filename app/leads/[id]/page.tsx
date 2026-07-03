@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import LogTouchpointForm from "./LogTouchpointForm";
+import AuthNav from "@/app/components/AuthNav";
 import type { Lead, Touchpoint } from "@/lib/types";
 
 export default function LeadDetailPage() {
@@ -50,9 +51,12 @@ export default function LeadDetailPage() {
 
   return (
     <main className="max-w-3xl mx-auto p-8 space-y-6">
-      <Link href="/leads" className="text-sm text-neutral-500 hover:underline">
-        ← Back to leads
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/leads" className="text-sm text-neutral-500 hover:underline">
+          ← Back to leads
+        </Link>
+        <AuthNav />
+      </div>
 
       <div>
         <h1 className="text-2xl font-bold">{lead.name}</h1>

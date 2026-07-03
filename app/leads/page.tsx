@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import NewLeadForm from "./NewLeadForm";
+import AuthNav from "@/app/components/AuthNav";
 import type { Lead } from "@/lib/types";
 
 export default function LeadsPage() {
@@ -28,7 +29,10 @@ export default function LeadsPage() {
     <main className="max-w-4xl mx-auto p-8 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Leads</h1>
-        <NewLeadForm onCreated={load} />
+        <div className="flex items-center gap-4">
+          <AuthNav />
+          <NewLeadForm onCreated={load} />
+        </div>
       </div>
 
       {error && (

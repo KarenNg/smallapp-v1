@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await request.json();
   const { lead_id, channel, summary, outcome, occurred_at } = body as {
     lead_id?: string;
@@ -22,6 +28,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from("touchpoints")
     .insert({
+      user_id: user.id,
       lead_id,
       channel: channel.trim(),
       summary: summary.trim(),

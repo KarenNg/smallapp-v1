@@ -28,6 +28,11 @@ export default function NewLeadForm({ onCreated }: { onCreated: () => void }) {
     const data = await res.json();
     setSubmitting(false);
 
+    if (res.status === 401) {
+      router.push("/login");
+      return;
+    }
+
     if (res.status === 402) {
       router.push("/upgrade");
       return;

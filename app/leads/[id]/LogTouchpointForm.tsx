@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { TOUCHPOINT_CHANNELS } from "@/lib/types";
 
 export default function LogTouchpointForm({
@@ -10,6 +11,7 @@ export default function LogTouchpointForm({
   leadId: string;
   onCreated: () => void;
 }) {
+  const router = useRouter();
   const [channel, setChannel] = useState<string>(TOUCHPOINT_CHANNELS[0]);
   const [summary, setSummary] = useState("");
   const [outcome, setOutcome] = useState("");
@@ -36,6 +38,11 @@ export default function LogTouchpointForm({
 
     const data = await res.json();
     setSubmitting(false);
+
+    if (res.status === 401) {
+      router.push("/login");
+      return;
+    }
 
     if (!res.ok) {
       setError(data.error || "Something went wrong");
