@@ -72,12 +72,14 @@ export default function LeadsPage() {
     URL.revokeObjectURL(url);
   }
 
-  const filtered = leads?.filter((l) => {
-    const matchStatus = filter === "all" || l.status === filter;
-    const q = search.toLowerCase();
-    const matchSearch = !q || l.name.toLowerCase().includes(q) || l.email.toLowerCase().includes(q);
-    return matchStatus && matchSearch;
-  });
+  const filtered = leads
+    ?.filter((l) => {
+      const matchStatus = filter === "all" || l.status === filter;
+      const q = search.toLowerCase();
+      const matchSearch = !q || l.name.toLowerCase().includes(q) || l.email.toLowerCase().includes(q);
+      return matchStatus && matchSearch;
+    })
+    .sort((a, b) => (b.ai_score ?? 0) - (a.ai_score ?? 0));
 
   return (
     <main className="max-w-4xl mx-auto p-8 space-y-6">
@@ -158,6 +160,7 @@ export default function LeadsPage() {
               <th className="py-2 pr-4">Email</th>
               <th className="py-2 pr-4">Source</th>
               <th className="py-2 pr-4">Status</th>
+              <th className="py-2 pr-4">Score</th>
               <th className="py-2 pr-4">Created</th>
             </tr>
           </thead>
@@ -182,6 +185,19 @@ export default function LeadsPage() {
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
+                </td>
+                <td className="py-2 pr-4">
+                  {lead.ai_score !== null ? (
+                    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                      lead.ai_score >= 70 ? "bg-green-100 text-green-700" :
+                      lead.ai_score >= 40 ? "bg-yellow-100 text-yellow-700" :
+                      "bg-neutral-100 text-neutral-500"
+                    }`}>
+                      {lead.ai_score}
+                    </span>
+                  ) : (
+                    <span className="text-neutral-300 text-xs">—</span>
+                  )}
                 </td>
                 <td className="py-2 pr-4 text-neutral-500">
                   {new Date(lead.created_at).toLocaleDateString()}

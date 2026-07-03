@@ -61,9 +61,18 @@ export default function LeadDetailPage() {
       <div>
         <h1 className="text-2xl font-bold">{lead.name}</h1>
         <p className="text-neutral-600">{lead.email}</p>
-        <div className="flex gap-2 mt-2 text-xs text-neutral-500">
+        <div className="flex gap-2 mt-2 text-xs text-neutral-500 flex-wrap">
           <span className="rounded-full bg-neutral-100 px-2 py-0.5">{lead.source}</span>
           <span className="rounded-full bg-neutral-100 px-2 py-0.5">{lead.status}</span>
+          {lead.ai_score !== null && (
+            <span className={`rounded-full px-2 py-0.5 font-medium ${
+              lead.ai_score >= 70 ? "bg-green-100 text-green-700" :
+              lead.ai_score >= 40 ? "bg-yellow-100 text-yellow-700" :
+              "bg-neutral-100 text-neutral-500"
+            }`}>
+              Score: {lead.ai_score}
+            </span>
+          )}
         </div>
         {lead.notes && <p className="mt-2 text-sm text-neutral-600">{lead.notes}</p>}
       </div>

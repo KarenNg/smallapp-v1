@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { computeScore } from "@/lib/scoring";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -48,6 +49,18 @@ export async function POST(request: Request) {
     action: "insert",
     new_data: data,
   });
+
+  // Re-score the lead after each new touchpoint
+  const { data: allTouchpoints } = await supabase
+    .from("touchpoints")
+    .select("*")
+    .eq("lead_id", lead_id);
+
+  const score = computeScore(allTouchpoints ?? []);
+  await supabase
+    .from("leads")
+    .update({ ai_score: score, ai_score_source: "rule-v1", ai_score_confidence: 0.9, ai_score_review_status: "unreviewed" })
+    .eq("id", lead_id);
 
   return NextResponse.json({ touchpoint: data }, { status: 201 });
 }
