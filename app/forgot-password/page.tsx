@@ -4,11 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -16,23 +16,38 @@ export default function LoginPage() {
     setError(null);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
 
     setSubmitting(false);
     if (error) {
       setError(error.message);
       return;
     }
-    window.location.href = "/leads";
+    setSent(true);
+  }
+
+  if (sent) {
+    return (
+      <main className="max-w-sm mx-auto p-8 space-y-4">
+        <h1 className="text-2xl font-bold">Check your email</h1>
+        <p className="text-sm text-neutral-600">
+          We sent a password reset link to <strong>{email}</strong>. Click the link in the email to set a new password.
+        </p>
+        <Link href="/login" className="block text-sm text-neutral-500 hover:underline">
+          ← Back to sign in
+        </Link>
+      </main>
+    );
   }
 
   return (
     <main className="max-w-sm mx-auto p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Sign in</h1>
+        <h1 className="text-2xl font-bold">Reset password</h1>
         <p className="text-sm text-neutral-500 mt-1">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="underline">Sign up</Link>
+          Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -46,34 +61,18 @@ export default function LoginPage() {
             className="w-full rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
-          />
-        </div>
-        <div className="text-right">
-          <Link href="/forgot-password" className="text-xs text-neutral-500 hover:underline">
-            Forgot password?
-          </Link>
-        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
           className="w-full rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
         >
-          {submitting ? "Signing in..." : "Sign in"}
+          {submitting ? "Sending…" : "Send reset link"}
         </button>
       </form>
-      <p className="text-xs text-neutral-400 text-center">
-        <Link href="/leads" className="underline">Continue without signing in</Link>
-        {" "}(view demo data only)
-      </p>
+      <Link href="/login" className="block text-sm text-neutral-500 hover:underline">
+        ← Back to sign in
+      </Link>
     </main>
   );
 }
