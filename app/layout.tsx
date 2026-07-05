@@ -16,12 +16,12 @@ export default function RootLayout({
       <body className="antialiased">
         <header className="border-b border-neutral-200 bg-white">
           <div className="max-w-4xl mx-auto px-8 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-md bg-black text-white text-xs font-bold">
+            <div className="flex items-center gap-3 bg-[#0a2472] rounded-lg px-4 py-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-md bg-white text-[#0a2472] text-sm font-bold">
                 RW
               </div>
-              <span className="font-semibold text-sm tracking-tight">
-                RiskWise <span className="text-neutral-500 font-normal">Consulting</span>
+              <span className="font-semibold text-base tracking-tight text-white">
+                RiskWise <span className="text-blue-200 font-normal">Consulting</span>
               </span>
             </div>
           </div>
