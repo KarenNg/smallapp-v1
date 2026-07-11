@@ -22,12 +22,12 @@ export default function AuthNav() {
 
   if (user) {
     return (
-      <div className="flex items-center gap-3 text-sm text-neutral-500">
-        <span>{user.email}</span>
+      <div className="flex flex-col gap-2 text-sm text-neutral-500">
+        <span className="truncate" title={user.email}>{user.email}</span>
         <form action="/api/auth/signout" method="POST">
           <button
             type="submit"
-            className="rounded-md border border-neutral-300 px-3 py-1 text-xs hover:bg-neutral-50"
+            className="w-full rounded-md border border-neutral-300 px-3 py-1 text-xs hover:bg-neutral-50"
           >
             Sign out
           </button>
@@ -37,11 +37,11 @@ export default function AuthNav() {
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex flex-col gap-2 text-sm">
       <Link href="/login" className="text-neutral-500 hover:underline">Sign in</Link>
       <Link
         href="/signup"
-        className="rounded-md bg-black px-3 py-1 text-xs font-medium text-white hover:bg-neutral-800"
+        className="w-full text-center rounded-md bg-black px-3 py-1 text-xs font-medium text-white hover:bg-neutral-800"
       >
         Sign up
       </Link>
